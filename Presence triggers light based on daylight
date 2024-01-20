@@ -1,0 +1,34 @@
+alias: Living Room Sideboard Light on at Presence
+description: Turn on sideboard light when presence is detected and light conditions meet
+trigger:
+  - platform: state
+    entity_id:
+      - binary_sensor.mmwave_sensor_02_presence
+    from: null
+    to: "on"
+condition:
+  - condition: and
+    conditions:
+      - condition: sun
+        before: sunrise
+        after: sunset
+        before_offset: "+01:00:00"
+        after_offset: "-01:00:00"
+      - condition: or
+        conditions:
+          - condition: device
+            device_id: 08f8afc05f232341a7cc445ce2679415
+            domain: device_tracker
+            entity_id: 3c2c8f37ad6a332c7c0089935280aaf8
+            type: is_home
+          - condition: device
+            device_id: 220442a9dab787306529d8ccf136ad6b
+            domain: device_tracker
+            entity_id: 4b0c9c3f75cd3374cca4d2665d50a16e
+            type: is_home
+action:
+  - type: turn_on
+    device_id: 04eee75ae6b6287f233cdbaeb740535b
+    entity_id: 3296912dd64f75c046f24d373443cdb7
+    domain: light
+mode: single
