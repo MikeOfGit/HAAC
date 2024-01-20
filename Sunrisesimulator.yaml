@@ -1,0 +1,28 @@
+alias: Simulate Sunrise at Alarm
+description: "Simulate sunrise at phone alarm - requires Sunrise Simulator Script by ChreeseGR - https://community.home-assistant.io/t/sunrise-simulator-wake-up-gently-to-light/493778"
+trigger:
+  - alias: My Phone Alarm trigger
+    platform: template
+    value_template: |-
+      {{now().strftime("%a %h %d %H:%M %Z %Y") ==
+        (((state_attr('sensor.papafon_next_alarm', 'Time in Milliseconds') |
+        int / 1000) + 0*60 ) | timestamp_custom('%a %h %d %H:%M %Z %Y'))}}
+    id: Papafon_Next_Alarm
+condition:
+  - condition: device
+    device_id: 08f8afc05f232341a7cc445ce2679415
+    domain: device_tracker
+    entity_id: device_tracker.papafon
+    type: is_home
+action:
+  - service: script.1697129385024
+    data:
+      duration: 30
+      target:
+        - light.bettlampe_schlafzimmer
+        - light.tischlampe_schlafzimmer
+        - light.deckenlampe_schlafzimmer
+        - light.mond
+        - light.max
+      brightness: 100
+mode: single
