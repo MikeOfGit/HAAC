@@ -1,0 +1,43 @@
+alias: Office Heating on at Home Office
+description: ""
+trigger:
+  - platform: time
+    at: "08:30:00"
+condition:
+  - condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: weather.forecast_home
+        attribute: temperature
+        below: 16
+      - condition: time
+        weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+        after: "08:00:00"
+        before: "22:00:00"
+      - condition: state
+        entity_id: climate.hvac_office
+        state: auto
+      - condition: device
+        device_id: 08f8afc05f232341a7cc445ce2679415
+        domain: device_tracker
+        entity_id: 3c2c8f37ad6a332c7c0089935280aaf8
+        type: is_home
+action:
+  - service: climate.set_hvac_mode
+    data:
+      hvac_mode: heat
+    target:
+      entity_id:
+        - climate.hvac_office
+  - service: climate.set_temperature
+    data:
+      temperature: 23
+      hvac_mode: heat
+    target:
+      entity_id: climate.hvac_office
+mode: single
